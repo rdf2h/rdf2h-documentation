@@ -1,0 +1,34 @@
+{
+  "name": "rdf2h",
+  "version": "0.5.1",
+  "author": "Reto Gmür",
+  "description": "Library to render RDF resources.",
+  "main": "src/index.js",
+  "homepage": "http://rdf2h.github.io/rdf2h-documentation/",
+  "dependencies": {
+    "clipboard": "^1.7.1",
+    "codemirror": "^5.33.0",
+    "jquery": "^3.2.1",
+    "rdf2h": "../rdf2h",
+    "rdflib": "^0.16.5"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --hot --inline --content-base static",
+    "build": "ncp static/ output/ && webpack -p"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.8",
+    "html-webpack-plugin": "^2.30.1",
+    "mocha": "^2.3.3",
+    "ncp": "^2.0.0",
+    "style-loader": "^0.19.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
+  },
+  "license": "Apache-2.0",
+  "repository": "https://github.com/rdf2h/rdf2h.git"
+}

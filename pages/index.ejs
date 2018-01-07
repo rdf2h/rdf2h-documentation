@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <meta charset="UTF-8">
+
+        <title><%= htmlWebpackPlugin.options.title %></title>
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <meta name="viewport" content="width=1000, initial-scale=1.0">
+
+        <link rel="shortcut icon" href="images/logo.png">
+    </head>
+    <body>
+        The following template graph:
+        <script type="text/turtle" class="editor templates">
+            @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+            @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
+            [ a r2h:Template; 
+                r2h:type rdfs:Resource;
+                r2h:context r2h:Default;
+                r2h:mustache "The title: {{dc:title}}"
+            ].
+        </script>
+        Applied to the following data graph:
+        <script type="text/turtle" class="editor data">
+            @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
+                <http://example.org/> dc:title "An example".
+        </script>
+        
+        <code type="application/javascript" class="editor">
+            new RDF2h(templates).render(data, "http://example.org/");
+        </code>
+
+    </body>
