@@ -24,6 +24,10 @@ function align(string) {
         .join("\n");
 }
 let vars = {};
+CodeMirror.prototype.getValueAsJS = function() {
+    return "\'" + this.getValue().replace(/\'/g, "\\'")
+                .split("\n").join("\\n\\\n") + "\'";
+}
 $(".editor").toArray().forEach((editorData) => {
     var value = $(editorData).html();
     var type = $(editorData).attr("type");
@@ -40,8 +44,7 @@ $(".editor").toArray().forEach((editorData) => {
     copyLink.insertAfter(editorDiv);
     new Clipboard(copyLink[0], {
         text: function (trigger) {
-            return "\'" + cmEditor.getValue().replace(/\'/g, "\\'")
-                .split("\n").join("\\n\\\n") + "\'";
+            return  cmEditor.getValueAsJS();
         }
     });
     if (type === "application/javascript") {
@@ -86,3 +89,33 @@ $(".editor").toArray().forEach((editorData) => {
     });
 });
 $(" .CodeMirror").css("height", "auto");
+
+let createTestLink = $("<a class='copyAsTest' href='#'>Copy as test</a>");
+new Clipboard(".copyAsTest", {
+    text: function (trigger) {
+        let section = $(event.target.closest(".step"));
+        let codeMirros = section.find(".CodeMirror").toArray().map(e => e.CodeMirror);
+        let templates = codeMirros[0].getValueAsJS();
+        let data = codeMirros[1].getValueAsJS();
+        let code = codeMirros[2].getValue();
+        let testTemplate = `it(\'Test generated from manual.\', function () {
+            var dataTurtle = ${data};
+            var templatesTurtle = ${templates};
+            var templates = rdf.graph();
+            rdf.parse(templatesTurtle, templates, "http://example.org/templates/", "text/turtle");
+            var data = rdf.graph();
+            rdf.parse(dataTurtle, data, "http://example.org/data", "text/turtle");
+            var renderingResult = (() => { ${code} })();
+            console.log("result: " + renderingResult);
+            assert.equal("EXPECTED RESULT", renderingResult);
+        });`
+        section.find(".CodeMirror").toArray().forEach((cm) => console.log(cm));
+        alert(testTemplate);
+        return  testTemplate;
+    }
+});
+/*createTestLink.click((event) => {
+    
+});*/
+$(".step").append($("<hr/>"));
+$(".step").append(createTestLink);
