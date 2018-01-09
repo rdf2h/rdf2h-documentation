@@ -73,6 +73,7 @@ $(".editor").toArray().forEach((editorData) => {
         execute();
         executeLink.click(() => {
             execute();
+            return false;
         });
     }
     $("<br/>").insertAfter(copyLink);
