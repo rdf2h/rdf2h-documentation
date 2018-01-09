@@ -47,25 +47,32 @@ $(".editor").toArray().forEach((editorData) => {
     if (type === "application/javascript") {
         let currentVars = {};
         Object.keys(vars).forEach(key => currentVars[key] = vars[key]);
-        let executeLink = $("<a href='#'>execute</a> ");
+        let executeLink = $("<a href='#'>run again</a> ");
         executeLink.insertAfter(editorDiv);
         let resultAreas = new Array();
-        executeLink.click(() => {
+        function execute() {
             resultAreas.forEach(a => a.remove());
-            let result;
             try {
-                result = new Function("rdf2h", ...Object.keys(currentVars), cmEditor.getValue())
+                let result = new Function("rdf2h", ...Object.keys(currentVars), cmEditor.getValue())
                     (rdf2h, ...Object.values(currentVars).map(v => v()));
+                let resultArea = $("<div class='result'>Returns the following result:<br>\
+                 <code class='result'>"+result+"</code></div>");
+                resultArea.insertAfter(editorDiv);
+                resultAreas.push(resultArea);
             } catch (err) {
                 let stackLines = err.stack.split("\n");
                 let lineWithSelf = stackLines.findIndex(l => l.indexOf("at eval") > 0);
                 err.stack = stackLines.splice(0, lineWithSelf).join("\n");
-                throw err;
+                let resultArea = $("<div class='result error'>Throws the following error:<br>\
+                <code class='result'>"+$('<div/>').text(err.message).html()+"\n"+$('<div/>').text(err.stack).html()+"</code></div>");
+                resultArea.insertAfter(editorDiv);
+                resultAreas.push(resultArea);
             }
-            let resultArea = $("<div class='result'>Returns the following result:<br>\
-            <code class='result'>"+result+"</code></div>");
-            resultArea.insertAfter(editorDiv);
-            resultAreas.push(resultArea);
+            
+        }
+        execute();
+        executeLink.click(() => {
+            execute();
         });
     }
     $("<br/>").insertAfter(copyLink);
