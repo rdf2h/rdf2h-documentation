@@ -4095,8 +4095,9 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-rdf2h@../rdf2h:
+rdf2h@rdf2h/rdf2h#v2.0:
   version "0.5.1"
+  resolved "https://codeload.github.com/rdf2h/rdf2h/tar.gz/3c499eb75f14a0996cfbdc089b020ab757916d24"
   dependencies:
     mustache "*"
     rdfgraphnode "1.1.0"
