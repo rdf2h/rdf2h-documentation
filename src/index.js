@@ -1,11 +1,13 @@
 import Clipboard from "clipboard";
-import $ from "jquery";
+import jQuery from "jquery";
 import rdf2h from "rdf2h";
 import rdf from "rdflib";
 import CodeMirror from "codemirror";
 import "codemirror/mode/turtle/turtle"
 import "codemirror/mode/javascript/javascript"
 import css from 'codemirror/lib/codemirror.css'
+
+let $ = jQuery;
 
 new Clipboard('.btn', {
     text: function (trigger) {
@@ -67,7 +69,7 @@ $(".editor").toArray().forEach((editorData) => {
                 let lineWithSelf = stackLines.findIndex(l => l.indexOf("at eval") > 0);
                 err.stack = stackLines.splice(0, lineWithSelf).join("\n");
                 let resultArea = $("<div class='result error'>Throws the following error:<br>\
-                <code class='result'>"+$('<div/>').text(err.message).html()+"\n"+$('<div/>').text(err.stack).html()+"</code></div>");
+                <code class='result'>"+$('<div/>').text(err.message).html().replace("\n","<br>")+"\n"+$('<div/>').text(err.stack).html()+"</code></div>");
                 resultArea.insertAfter(editorDiv);
                 resultAreas.push(resultArea);
             }

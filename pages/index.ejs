@@ -95,18 +95,41 @@
             Applied to the following data graph:
             <script type="text/turtle" class="editor data">
                 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
-                        <http://example.org/a> 
-                                foaf:knows <http://example.org/b>, 
-                                        <http://example.org/c>,
-                                        <http://example.org/d>;
-                                a foaf:Person;
-                                foaf:name "Alice".
-                        <http://example.org/b> foaf:name "Bob".
+                <http://example.org/a> 
+                        foaf:knows <http://example.org/b>, 
+                                <http://example.org/c>,
+                                <http://example.org/d>;
+                        a foaf:Person;
+                        foaf:name "Alice".
+                <http://example.org/b> foaf:name "Bob".
             </script>
             
             <code type="application/javascript" class="editor">
                 return new RDF2h(templates).render(data, "http://example.org/a");
             </code>
+            <h3>Additional features</h3>
+            Additionally to the possibility of looping the values of a property RDF2h supporrts
+            prefixing the property path with <code>'+'</code>, the resulting expression evaluates to true when the path exists and to
+            false otherwise. Note that this doesn't change the evaluation context, so that the value of <code>'.'</code> doesn't change
+            and the property needs to be accesses like outside the block. It may be used in combination
+            with a loop over the property.<bR>
+            Example:
+            <pre>
+                {{@prefix foaf: &lt;http://xmlns.com/foaf/0.1/>}}
+                Name: {{foaf:name}}&lt;/br>
+                {{#+foaf:knows}}
+                Knows:
+                &lt;ul>
+                    {{#foaf:knows}}
+                    &lt;li>{{.}}&lt;/li>
+                    {{/foaf:knows}}
+                &lt;/ul>
+                {{/+foaf:knows}}
+                {{^+foaf:knows}}
+                    {{foaf:name}} doesn't know anybody.
+                {{/+foaf:knows}}
+            </pre>
+            
         </section>
 
         <section class="step">
@@ -157,49 +180,107 @@
         </section>
 
         <section class="step">
-                <h2>Selection of template</h2>
-                With the following templates there's a more specific template for `foaf:OnlineChatAccount` that
-                can be used instead of the more generic template for `foaf:OnlineAccount`. To allow RDF2h to
-                know which type is more specific we also added the statement 
-                `foaf:OnlineChatAccount rdfs:subClassOf foaf:OnlineAccount`.
-                <script type="text/turtle" class="editor templates">
-                    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-                    @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
-                    @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
-                    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-                    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-                    [ a r2h:Template;
-                        r2h:type foaf:Person;
-                        r2h:context r2h:Default;
-                        r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
-                            Name: {{foaf:name}}</br>
-                            <ul>{{#foaf:account}}
-                            <li>{{{:render .}}}</li>
-                            {{/foaf:account}}</ul>"""
-                    ].
-                    [ a r2h:Template;
-                        r2h:type foaf:OnlineAccount;
-                        r2h:context r2h:Default;
-                        r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
-                            <div class="account">
-                                Connect with {{foaf:accountName}} on {{foaf:accountServiceHomepage}}
-                            </div>"""
-                    ].
-                    [ a r2h:Template;
-                        r2h:type foaf:OnlineChatAccount;
-                        r2h:context r2h:Default;
-                        r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
-                            <div class="account">
-                                Chat with {{foaf:accountName}} on {{foaf:accountServiceHomepage}}
-                            </div>"""
-                    ].
-                    foaf:OnlineChatAccount rdfs:subClassOf foaf:OnlineAccount.
-                </script>
-                
-                <code type="application/javascript" class="editor">
-                    return new RDF2h(templates).render(data, "http://example.org/a");
-                </code>
-            </section>
+            <h2>Selection of template</h2>
+            With the following templates there's a more specific template for `foaf:OnlineChatAccount` that
+            can be used instead of the more generic template for `foaf:OnlineAccount`. To allow RDF2h to
+            know which type is more specific we also added the statement 
+            `foaf:OnlineChatAccount rdfs:subClassOf foaf:OnlineAccount`.
+            <script type="text/turtle" class="editor templates">
+                @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+                @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
+                @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                [ a r2h:Template;
+                    r2h:type foaf:Person;
+                    r2h:context r2h:Default;
+                    r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
+                        Name: {{foaf:name}}</br>
+                        <ul>{{#foaf:account}}
+                        <li>{{{:render .}}}</li>
+                        {{/foaf:account}}</ul>"""
+                ].
+                [ a r2h:Template;
+                    r2h:type foaf:OnlineAccount;
+                    r2h:context r2h:Default;
+                    r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
+                        <div class="account">
+                            Connect with {{foaf:accountName}} on {{foaf:accountServiceHomepage}}
+                        </div>"""
+                ].
+                [ a r2h:Template;
+                    r2h:type foaf:OnlineChatAccount;
+                    r2h:context r2h:Default;
+                    r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
+                        <div class="account">
+                            Chat with {{foaf:accountName}} on {{foaf:accountServiceHomepage}}
+                        </div>"""
+                ].
+                foaf:OnlineChatAccount rdfs:subClassOf foaf:OnlineAccount.
+            </script>
+            
+            <code type="application/javascript" class="editor">
+                return new RDF2h(templates).render(data, "http://example.org/a");
+            </code>
+        </section>
+
+        <section class="step">
+            <h2>Javascript instead of mustache</h2>
+            Mustache provides a very simple way to render resources. However occasionally its possibilities
+            just arent enough. As an alternative you can use the <code>r2h:javaScript</code> property which points to some js code
+            writing that returns the rendering result. The code has access to the following variables: <code>n</code>, 
+            <code>context</code>, <code>$rdf</code> 
+            and to the function <code>render(graphNode, context)</code>.
+            <script type="text/turtle" class="editor templates">
+                @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+                @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
+                @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                [ a r2h:Template;
+                    r2h:type foaf:Person;
+                    r2h:context r2h:Default;
+                    r2h:javaScript """
+                        let foaf = suffix => new $rdf.sym("http://xmlns.com/foaf/0.1/"+suffix);
+                        let result = n.out(foaf("name")).value+"<br/>";
+                        let known = n.out(foaf("knows")).split();
+                        known.sort(function(a,b) {
+                            var gn = foaf("name");
+                            return a.out(gn).value.localeCompare(b.out(gn).value);
+                        });
+                        result += "<ul>";
+                        known.forEach(function(k) {
+                            result += "<li>"+render(k)+"</li>";
+                        });
+                        result += "</ul>";
+                        return result;
+                        """
+                ].
+            </script>
+            Applied to the following data graph:
+            <script type="text/turtle" class="editor data">
+                @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+                <http://example.org/a> 
+                        foaf:knows <http://example.org/c>, 
+                                <http://example.org/b>,
+                                <http://example.org/d>;
+                        a foaf:Person;
+                        foaf:name "Alice".
+                <http://example.org/b> a foaf:Person; foaf:name "Bob".
+                <http://example.org/c> a foaf:Person; foaf:name "Caroline".
+                <http://example.org/d> a foaf:Person; foaf:name "Danny"; foaf:knows <http://example.org/e>.
+                <http://example.org/e> a foaf:Person; foaf:name "Eric".
+            </script>
+            
+            <code type="application/javascript" class="editor">
+                return new RDF2h(templates).render(data, "http://example.org/a");
+            </code>
+            Note the recursive invocation of the template. This would lead to an infinite loop if one of 
+            the persons known by Alice would know her back. A way to avoid this would be to change context
+            by invoking the <code>render</code> function with a second argument and to provide a template 
+            that doesn't further expands the value of the <code>foaf:knows</code> property.
+            
+        </section>
 
     </body>
 </html>
