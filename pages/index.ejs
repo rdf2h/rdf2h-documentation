@@ -10,10 +10,35 @@
 
         <meta name="viewport" content="width=1000, initial-scale=1.0">
 
+        <link rel="stylesheet" href="https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
         <link rel="shortcut icon" href="./rdf_flyer.24.png">
         <style>
+            body {
+                background-color: #f7f7f7;
+            }
+            hr {
+                margin-bottom: 3em;
+            }
+            code, pre, .code {
+                color: #555;
+                font-family: 'Fira Code';
+                font-size: .75rem;
+                padding: 4px 1px;
+                border-bottom: 1px solid #ddd;
+                background-color: #fff;
+            }
+            .CodeMirror {
+                font-family: 'Fira Code' !important;
+                font-size: .75rem;
+                border: 1px solid #ddd;
+                margin-top: 8px;
+            }
+            .CodeMirror-lines {
+                padding-right: 66px;
+            }
             .btn-svg {
+                float: right;
                 border: none;
                 background-color: #ffffff00;
                 cursor: pointer;
@@ -21,13 +46,38 @@
                 margin: 0;
             }
             .btn-svg svg {
-                margin: .75em;
+                margin: .4em;
             }
             .btn-svg:hover path {
-                fill: #007bff !important;
+                fill: #ddd !important;
             }
             .btn-svg path {
-                fill: #6c757d !important;
+                fill: #555 !important;
+            }
+            .result {
+                margin-top: 8px;
+            }
+            .result-bg {
+                margin-top: .2em;
+                margin-bottom: .2em;
+                padding: .2em 1em;
+                background-color: #fff;
+                border: 1px solid #ddd;
+            }
+            .c-red {
+                color: #a11;
+            }
+            .c-dark {
+                color: #555;
+            }
+            .c-blue {
+                color: #219;
+            }
+            .c-violet {
+                color: #708;
+            }
+            .c-green {
+                color: #085 ;
             }
         </style
     </head>
@@ -40,14 +90,14 @@
             </p>
         </div>
         <section class="step container-fluid">
-            <h2>Defining a template</h2>
-            The following is a template graph that defines a template for <code>rdfs:Resource</code>
-            <script type="text/turtle" class="editor templates">
+            <h1>Defining a renderer</h1>
+            The following is a renderer graph that defines a renderer for <code class="c-green">rdfs</code><code>:</code><code class="c-red">Resource</code>
+            <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
                 @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
-                [ a r2h:Template; 
+                [ a r2h:Renderer; 
                     r2h:type rdfs:Resource;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix dc: <http://dublincore.org/2012/06/14/dcelements#>}} 
@@ -61,20 +111,20 @@
             </script>
             
             <code type="application/javascript" class="editor">
-                return new RDF2h(templates).render(data, "http://example.org/");
+                return new RDF2h(renderers).render(data, "http://example.org/");
             </code>
         </section>
         <section class="step container-fluid">
-            <h2>Property paths</h2>
-            The previous example contained a mustache template following a property (<code>dc:ttitle</code>) 
-            to its value. The template defined in the following graph follows the <code>foaf:knows</code>
-            property backwards and the the <code>foaf:knows</code> property forwards.
-            <script type="text/turtle" class="editor templates">
+            <h1>Property paths</h1>
+            The previous example contained a mustache renderer following a property (<code><code class="c-green">dc</code>:<code class="c-red">title</code></code>) 
+            to its value. The renderer defined in the following graph follows the <code><code class="c-green">foaf</code>:<code class="c-red">knows</code></code>
+            property backwards and then the <code><code class="c-green">foaf</code>:</code><code class="c-red">knows</code></code> property forwards.
+            <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
                 @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
                 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-                [ a r2h:Template;
+                [ a r2h:Renderer;
                     r2h:type rdfs:Resource;
                     r2h:context r2h:Default;
                     r2h:mustache "{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}Known by: {{foaf:knows<-/foaf:name}}"
@@ -88,21 +138,21 @@
             </script>
             
             <code type="application/javascript" class="editor">
-                return new RDF2h(templates).render(data, "http://example.org/a");
+                return new RDF2h(renderers).render(data, "http://example.org/a");
             </code>
         </section>
 
         <section class="step container-fluid">
-            <h2>Loops and conditions</h2>
+            <h1>Loops and conditions</h1>
             We can use mustache syntax to iterate over the different values of a property. The same also 
-            works with inverse properties. The following template will render all friends of a Person.
-            <script type="text/turtle" class="editor templates">
+            works with inverse properties. The following renderer will render all friends of a Person.
+            <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
                 @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
                 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
                 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-                [ a r2h:Template;
+                [ a r2h:Renderer;
                     r2h:type foaf:Person;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
@@ -125,16 +175,16 @@
             </script>
             
             <code type="application/javascript" class="editor">
-                return new RDF2h(templates).render(data, "http://example.org/a");
+                return new RDF2h(renderers).render(data, "http://example.org/a");
             </code>
             <h3>Additional features</h3>
             Additionally to the possibility of looping the values of a property RDF2h supporrts
-            prefixing the property path with <code>'+'</code>, the resulting expression evaluates to true when the path exists and to
-            false otherwise. Note that this doesn't change the evaluation context, so that the value of <code>'.'</code> doesn't change
+            prefixing the property path with <code class="c-red">+</code>, the resulting expression evaluates to true when the path exists and to
+            false otherwise. Note that this doesn't change the evaluation context, so that the value of <code class="c-red">.</code> doesn't change
             and the property needs to be accesses like outside the block. It may be used in combination
-            with a loop over the property.<bR>
+            with a loop over the property.<br>
             Example:
-            <pre>
+            <pre class="editor c-red">
                 {{@prefix foaf: &lt;http://xmlns.com/foaf/0.1/>}}
                 Name: {{foaf:name}}&lt;/br>
                 {{#+foaf:knows}}
@@ -149,20 +199,20 @@
                     {{foaf:name}} doesn't know anybody.
                 {{/+foaf:knows}}
             </pre>
-            
+            <br>
         </section>
 
         <section class="step container-fluid">
-            <h2>Delegating back to renderer</h2>
-            By invoking `:render` a resource is given back to the rendering engine for rendering. Typically
-            `:render` is invoked between triple-braces to avoid double escaping.
-            <script type="text/turtle" class="editor templates">
+            <h1>Delegating back to renderer</h1>
+            By invoking <code>:</code><code class="c-red">render</code> a resource is given back to the rendering engine for rendering. Typically
+            <code>:</code><code class="c-red">render</code> is invoked between triple-braces to avoid double escaping.
+            <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
                 @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
                 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
                 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-                [ a r2h:Template;
+                [ a r2h:Renderer;
                     r2h:type foaf:Person;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
@@ -171,7 +221,7 @@
                         <li>{{{:render .}}}</li>
                         {{/foaf:account}}</ul>"""
                 ].
-                [ a r2h:Template;
+                [ a r2h:Renderer;
                     r2h:type foaf:OnlineAccount;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
@@ -195,23 +245,23 @@
             </script>
             
             <code type="application/javascript" class="editor">
-                return new RDF2h(templates).render(data, "http://example.org/a");
+                return new RDF2h(renderers).render(data, "http://example.org/a");
             </code>
         </section>
 
         <section class="step container-fluid">
-            <h2>Selection of template</h2>
-            With the following templates there's a more specific template for `foaf:OnlineChatAccount` that
-            can be used instead of the more generic template for `foaf:OnlineAccount`. To allow RDF2h to
+            <h1>Selection of renderer</h1>
+            With the following renderers there's a more specific renderer for <code class="c-green">foaf</code><code>:</code><code class="c-red">OnlineChatAccount</code> that
+            can be used instead of the more generic renderer for <code class="c-green">foaf</code><code>:</code><code class="c-red">OnlineAccount</code>. To allow RDF2h to
             know which type is more specific we also added the statement 
-            `foaf:OnlineChatAccount rdfs:subClassOf foaf:OnlineAccount`.
-            <script type="text/turtle" class="editor templates">
+            <code><code class="c-green">foaf</code><code>:</code><code class="c-red">OnlineChatAccount</code> <code class="c-green">rdfs</code><code>:</code><code class="c-red">subClassOf</code> <code class="c-green">foaf</code><code>:</code><code class="c-red">OnlineAccount</code></code>.
+            <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
                 @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
                 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
                 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-                [ a r2h:Template;
+                [ a r2h:Renderer;
                     r2h:type foaf:Person;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
@@ -220,7 +270,7 @@
                         <li>{{{:render .}}}</li>
                         {{/foaf:account}}</ul>"""
                 ].
-                [ a r2h:Template;
+                [ a r2h:Renderer;
                     r2h:type foaf:OnlineAccount;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
@@ -228,7 +278,7 @@
                             Connect with {{foaf:accountName}} on {{foaf:accountServiceHomepage}}
                         </div>"""
                 ].
-                [ a r2h:Template;
+                [ a r2h:Renderer;
                     r2h:type foaf:OnlineChatAccount;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
@@ -240,24 +290,24 @@
             </script>
             
             <code type="application/javascript" class="editor">
-                return new RDF2h(templates).render(data, "http://example.org/a");
+                return new RDF2h(renderers).render(data, "http://example.org/a");
             </code>
         </section>
 
         <section class="step container-fluid">
-            <h2>Javascript instead of mustache</h2>
+            <h1>Javascript instead of mustache</h1>
             Mustache provides a very simple way to render resources. However occasionally its possibilities
-            just arent enough. As an alternative you can use the <code>r2h:javaScript</code> property which points to some js code
+            just arent enough. As an alternative you can use the <code class="c-green">r2h</code><code>:</code><code class="c-red">javaScript</code> property which points to some js code
             writing that returns the rendering result. The code has access to the following variables: <code>n</code>, 
             <code>context</code>, <code>$rdf</code> 
             and to the function <code>render(graphNode, context)</code>.
-            <script type="text/turtle" class="editor templates">
+            <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
                 @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
                 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
                 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-                [ a r2h:Template;
+                [ a r2h:Renderer;
                     r2h:type foaf:Person;
                     r2h:context r2h:Default;
                     r2h:javaScript """
@@ -293,13 +343,13 @@
             </script>
             
             <code type="application/javascript" class="editor">
-                return new RDF2h(templates).render(data, "http://example.org/a");
+                return new RDF2h(renderers).render(data, "http://example.org/a");
             </code>
-            Note the recursive invocation of the template. This would lead to an infinite loop if one of 
+            Note the recursive invocation of the renderer. This would lead to an infinite loop if one of 
             the persons known by Alice would know her back. A way to avoid this would be to change context
-            by invoking the <code>render</code> function with a second argument and to provide a template 
-            that doesn't further expands the value of the <code>foaf:knows</code> property.
-            
+            by invoking the <code>render</code> function with a second argument and to provide a renderer 
+            that doesn't further expands the value of the <code class="c-green">foaf</code><code>:</code><code class="c-red">knows</code> property.
+            <br>
         </section>
 
     </body>
