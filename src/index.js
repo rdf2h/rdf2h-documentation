@@ -34,13 +34,13 @@ $(".editor").toArray().forEach((editorData) => {
     var value = $(editorData).html();
     var type = $(editorData).attr("type");
     $(editorData).hide();
-    var editorDiv = $("<div></div>");
+    var editorDiv = $('<div class="border"></div>');
     editorDiv.insertAfter(editorData);
     var cmEditor = CodeMirror(editorDiv[0], {
         mode: type,
         lineNumbers: true,
         viewportMargin: Infinity,
-        lineWrapping: false
+        lineWrapping: true,
     });
     cmEditor.setValue(align(value));
     let copyJsLink = $("<button class='btn-svg' width='24' height='24'><svg style='width:24px;height:24px' viewBox='0 0 24 24'><path d='m 16,13 c 0,0.530049 0.211136,1.039261 0.585938,1.414062 C 16.960739,14.788864 17.469951,15 18,15 v -2 z' /><path d='m 18,9 c -1.092725,0 -2,0.9072752 -2,2 h 2 z' /><path d='M 2,3 V 17 H 4 V 3 Z' /><path d='M 4,1 V 3 H 16 V 1 Z' /><path d='M 8,5 V 7 H 21 V 5 Z' /><path d='M 6,7 V 21 H 8 V 7 Z' /><path d='m 13,9 v 8 h 2 V 9 Z' /><path d='m 18,9 v 2 h 3 V 9 Z' /><path d='m 16,11 v 2 h 2 v -2 z' /><path d='m 19,15 v 2 h 2 v -2 z' /><path d='m 16,17 v 2 h 3 v -2 z' /><path d='m 8,21 v 2 h 13 v -2 z' /><path d='m 10,15 v 2 h 2 v -2 z' /><path d='m 19,17 v 2 c 1.092725,0 2,-0.907275 2,-2 z' /><path d='m 13,17 v 2 c 1.092725,0 2,-0.907275 2,-2 z' /><path d='m 6,21 c 0,0.530049 0.2111364,1.039261 0.5859375,1.414062 C 6.9607386,22.788864 7.4699512,23 8,23 v -2 z' /><path d='m 10,17 c 0,0.530049 0.211136,1.039261 0.585938,1.414062 C 10.960739,18.788864 11.469951,19 12,19 v -2 z' /><path d='M 8,5 C 6.9072752,5 6.0000001,5.9072752 6,7 h 2 z' /><path d='m 4,1 c -1.0927248,-2e-8 -1.9999999,0.9072752 -2,2 h 2 z' /><path d='m 19,13 v 2 h 2 c 0,-1.092725 -0.907275,-2 -2,-2 z' /><path d='m 12,17 v 2 h 1 v -2 z' /><path d='m 18,13 v 2 h 1 v -2 z' /></svg></button>");
