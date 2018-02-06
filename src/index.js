@@ -34,7 +34,7 @@ $(".editor").toArray().forEach((editorData) => {
     var value = $(editorData).html();
     var type = $(editorData).attr("type");
     $(editorData).hide();
-    var editorDiv = $('<div class="border"></div>');
+    var editorDiv = $('<div class="rand"></div>');
     editorDiv.insertAfter(editorData);
     var cmEditor = CodeMirror(editorDiv[0], {
         mode: type,
@@ -98,7 +98,6 @@ $(".editor").toArray().forEach((editorData) => {
     });
 });
 $(" .CodeMirror").css("height", "auto");
-
 let createTestLink = $("<button class='copyAsTest btn-svg m-0'><svg width='24' height='24' viewBox='0 0 24 24'><path d='M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z' /></svg></button>");
 new Clipboard(".copyAsTest", {
     text: function (trigger) {
@@ -126,5 +125,4 @@ new Clipboard(".copyAsTest", {
 /*createTestLink.click((event) => {
     
 });*/
-$(".step").append(createTestLink);
-$(".step").append($("<hr/>"));
+$(".step").prepend(createTestLink);
