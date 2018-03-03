@@ -14,20 +14,35 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
         <link rel="shortcut icon" href="./rdf_flyer.24.png">
         <style>
-            body {background-color: #f7f7f7;}
-            hr {margin-bottom: 3em;}
+            ::selection {
+                background-color: #d7d4f0;
+            }
+            body {
+                background-color: #f7f7f7;
+                border-right: 1px solid #ddd;
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1.5;
+            }
+            section {
+                border-top: 1px solid #ddd;
+                padding: 30px 15px;
+                width: 100%;
+                margin-right: auto;
+                margin-left: auto;
+            }
             section > code, section > pre, .code {
                 color: #555;
                 padding: 4px;
                 border: 1px solid #ddd;
                 background-color: #fff;
             }
-            code, .CodeMirror {
-                font-family: 'Fira Code' !important;
+            code, .code, .CodeMirror {
+                font-family: 'Fira Code', monospace !important;
                 font-size: .75rem;
             }
             .CodeMirror {min-height: 37px;}
-            .border {
+            .rand {
                 border: 1px solid #ddd;
                 background-color: #fff;
                 padding: 0;
@@ -44,10 +59,9 @@
             .btn-svg svg {margin: .4em;}
             .btn-svg:hover path {fill: #ddd !important;}
             .btn-svg path {fill: #555 !important;}
-            .result {margin-top: 8px;}
             .result-bg {
-                margin: 8px 0;
-                padding: 4px 8px;
+                padding: 4px;
+                margin: 8px 0 8px 29px;
                 background-color: #fff;
                 border: 1px solid #ddd;
             }
@@ -99,7 +113,8 @@
             )to its value. The renderer defined in the following graph follows the
             <code><code class="c-green">foaf</code>:<code class="c-red">knows</code></code>
             property backwards and then the
-            <code><code class="c-green">foaf</code>:<code class="c-red">knows</code></code>property forwards.
+            <code><code class="c-green">foaf</code>:<code class="c-red">knows</code></code>
+            property forwards.
             <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
@@ -137,7 +152,7 @@
                     r2h:type foaf:Person;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
-                        Name: {{foaf:name}}</br>
+                        Name: {{foaf:name}}<br>
                         {{#foaf:knows}}
                         <li>{{.}}</li>
                         {{/foaf:knows}}"""
@@ -161,15 +176,17 @@
             <h3>Additional features</h3>
              Additionally to the possibility of looping the values of a property RDF2h supporrts prefixing the property path with
             <code
-                class="c-red">+</code>, the resulting expression evaluates to true when the path exists and to false otherwise. Note that this doesn't
+                class="c-red">+</code>
+                , the resulting expression evaluates to true when the path exists and to false otherwise. Note that this doesn't
                 change the evaluation context, so that the value of
-                <code class="c-red">.</code> doesn't change and the property needs to be accesses like outside the block. It may be used in combination with a loop
+                <code class="c-red">.</code>
+                doesn't change and the property needs to be accesses like outside the block. It may be used in combination with a loop
                 over the property.
                 <br>
                 Example:
             <pre class="editor">
                 {{@prefix foaf: &lt;http://xmlns.com/foaf/0.1/>}}
-                Name: {{foaf:name}}&lt;/br>
+                Name: {{foaf:name}}&lt;br>
                 {{#+foaf:knows}}
                 Knows:
                 &lt;ul>
@@ -182,14 +199,15 @@
                     {{foaf:name}} doesn't know anybody.
                 {{/+foaf:knows}}
             </pre>
-            <br>
         </section>
 
         <section class="step container-fluid">
             <h1>Delegating back to renderer</h1>
             By invoking
-            <code>:<code class="c-red">render</code></code> a resource is given back to the rendering engine for rendering. Typically
-            <code>:<code class="c-red">render</code></code> is invoked between triple-braces to avoid double escaping.
+            <code>:<code class="c-red">render</code></code>
+            a resource is given back to the rendering engine for rendering. Typically
+            <code>:<code class="c-red">render</code></code>
+            is invoked between triple-braces to avoid double escaping.
             <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
@@ -200,7 +218,7 @@
                     r2h:type foaf:Person;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
-                        Name: {{foaf:name}}</br>
+                        Name: {{foaf:name}}<br>
                         <ul>{{#foaf:account}}
                         <li>{{{:render .}}}</li>
                         {{/foaf:account}}</ul>"""
@@ -238,11 +256,12 @@
              With the following renderers there's a more specific renderer for
             <code><code class="c-green">foaf</code>:<code class="c-red">OnlineChatAccount</code></code>
             that can be used instead of the more generic renderer for
-            <code><code class="c-green">foaf</code>:<code class="c-red">OnlineAccount</code></code>.
-            To allow RDF2h to know which type is more specific we also added the statement
+            <code><code class="c-green">foaf</code>:<code class="c-red">OnlineAccount</code></code>
+            . To allow RDF2h to know which type is more specific we also added the statement
             <code><code class="c-green">foaf</code>:<code class="c-red">OnlineChatAccount</code>
             <code class="c-green">rdfs</code>:<code class="c-red">subClassOf</code>
-            <code class="c-green">foaf</code>:<code class="c-red">OnlineAccount</code></code>.
+            <code class="c-green">foaf</code>:<code class="c-red">OnlineAccount</code></code>
+            .
             <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
@@ -253,7 +272,7 @@
                     r2h:type foaf:Person;
                     r2h:context r2h:Default;
                     r2h:mustache """{{@prefix foaf: <http://xmlns.com/foaf/0.1/>}}
-                        Name: {{foaf:name}}</br>
+                        Name: {{foaf:name}}<br>
                         <ul>{{#foaf:account}}
                         <li>{{{:render .}}}</li>
                         {{/foaf:account}}</ul>"""
@@ -289,10 +308,14 @@
             <code><code class="c-green">r2h</code>:<code class="c-red">javaScript</code></code>
             property which points to some js code writing that returns the rendering result. The code has access to the following
             variables:
-            <code>n</code> ,
-            <code>context</code> ,
-            <code>$rdf</code> and to the function
-            <code>render(graphNode, context)</code>.
+            <code>n</code>
+            ,
+            <code>context</code>
+            ,
+            <code>$rdf</code>
+            and to the function
+            <code>render(graphNode, context)</code>
+            .
             <script type="text/turtle" class="editor renderers">
                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                 @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
@@ -338,9 +361,10 @@
             </code>
             Note the recursive invocation of the renderer. This would lead to an infinite loop if one of the persons known by Alice
             would know her back. A way to avoid this would be to change context by invoking the
-            <code>render</code> function with a second argument and to provide a renderer that doesn't further expands the value of the
-            <code><code class="c-green">foaf</code>:<code class="c-red">knows</code></code> property.
-            <br>
+            <code>render</code>
+            function with a second argument and to provide a renderer that doesn't further expands the value of the
+            <code><code class="c-green">foaf</code>:<code class="c-red">knows</code></code>
+            property.
         </section>
 
     <script type="text/javascript" src="js/rdf2h-documentation.js"></script></body>
