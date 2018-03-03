@@ -327,18 +327,17 @@
                     r2h:context r2h:Default;
                     r2h:javaScript """
                         let foaf = suffix => new $rdf.sym("http://xmlns.com/foaf/0.1/"+suffix);
-                        let result = n.out(foaf("name")).value+"<br>";
+                        print(n.out(foaf("name")).value+"<br/>");
                         let known = n.out(foaf("knows")).split();
                         known.sort(function(a,b) {
                             var gn = foaf("name");
                             return a.out(gn).value.localeCompare(b.out(gn).value);
                         });
-                        result += "<ul>";
+                        print("<ul>");
                         known.forEach(function(k) {
-                            result += "<li>"+render(k)+"</li>";
+                            print("<li>"+render(k)+"</li>");
                         });
-                        result += "</ul>";
-                        return result;
+                        print("</ul>");
                         """
                 ].
             </script>
