@@ -175,31 +175,26 @@
             </code>
             <h3>Additional features</h3>
              Additionally to the possibility of looping the values of a property RDF2h supporrts prefixing the property path with
-            <code
-                class="c-red">+</code>
-                , the resulting expression evaluates to true when the path exists and to false otherwise. Note that this doesn't
-                change the evaluation context, so that the value of
-                <code class="c-red">.</code>
-                doesn't change and the property needs to be accesses like outside the block. It may be used in combination with a loop
-                over the property.
-                <br>
-                Example:
-            <pre class="editor">
-                {{@prefix foaf: &lt;http://xmlns.com/foaf/0.1/>}}
-                Name: {{foaf:name}}&lt;br>
+            <code class="c-red">+</code> , the resulting expression evaluates to true when the path exists and to false otherwise. Note that this doesn't change
+            the evaluation context, so that the value of
+            <code class="c-red">.</code> doesn't change and the property needs to be accesses like outside the block. It may be used in combination with a loop over
+            the property.
+            <br> Example:
+            <script type="text/turtle" class="editor">
+                """Name: {{foaf:name}}</br>
                 {{#+foaf:knows}}
                 Knows:
-                &lt;ul>
-                    {{#foaf:knows}}
-                    &lt;li>{{.}}&lt;/li>
-                    {{/foaf:knows}}
-                &lt;/ul>
+                <ul>
+                {{#foaf:knows}}
+                <li>{{.}}</li>
+                {{/foaf:knows}}
+                </ul>
                 {{/+foaf:knows}}
                 {{^+foaf:knows}}
-                    {{foaf:name}} doesn't know anybody.
-                {{/+foaf:knows}}
-            </pre>
-        </section>
+                {{foaf:name}} doesn't know anybody.
+                {{/+foaf:knows}}"""
+            </script>
+            </section>
 
         <section class="step container-fluid">
             <h1>Delegating back to renderer</h1>
