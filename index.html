@@ -321,7 +321,7 @@
                     r2h:type foaf:Person;
                     r2h:context r2h:Default;
                     r2h:javaScript """
-                        let foaf = suffix => new $rdf.sym("http://xmlns.com/foaf/0.1/"+suffix);
+                        let foaf = suffix => $rdf.sym("http://xmlns.com/foaf/0.1/"+suffix);
                         print(n.out(foaf("name")).value+"<br/>");
                         let known = n.out(foaf("knows")).split();
                         known.sort(function(a,b) {
