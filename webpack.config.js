@@ -1,6 +1,8 @@
 // This library allows us to combine paths easily
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+
 //const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
@@ -16,9 +18,10 @@ module.exports = {
     rules: [
       {
         test: /\.js/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: { presets: ['react', 'es2015'] }
+          options: { presets: ['env'] }
         }
       },
       {
@@ -37,6 +40,13 @@ module.exports = {
       filename: 'index.html',
       title: 'RDF2h DocumentationS',
       template: 'pages/index.ejs', // Load a custom template (ejs by default see the FAQ for details) 
+    }),
+    new UglifyJSPlugin({
+      test: /\.js($|\?)/i,
+      sourceMap: true,
+      uglifyOptions: {
+          compress: true
+      }
     })/*,
     new ExtractTextPlugin({
       filename: "style.css",

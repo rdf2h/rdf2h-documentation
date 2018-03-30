@@ -1,7 +1,7 @@
 import Clipboard from "clipboard";
 import jQuery from "jquery";
 import rdf2h from "rdf2h";
-import rdf from "rdflib";
+import rdf from "ext-rdflib";
 import CodeMirror from "codemirror";
 import "codemirror/mode/turtle/turtle"
 import "codemirror/mode/javascript/javascript"
@@ -65,22 +65,25 @@ $(".editor").toArray().forEach((editorData) => {
         let resultAreas = new Array();
         function execute() {
             resultAreas.forEach(a => a.remove());
-            try {
-                let result = new Function("rdf2h", ...Object.keys(currentVars), cmEditor.getValue())
-                    (rdf2h, ...Object.values(currentVars).map(v => v()));
-                let resultArea = $("<div class='result'>Returns the following result:<br>\
-                 <div class='result result-bg'>"+result+"</div></div>");
-                resultArea.insertAfter(editorDiv);
-                resultAreas.push(resultArea);
-            } catch (err) {
-                let stackLines = err.stack.split("\n");
-                let lineWithSelf = stackLines.findIndex(l => l.indexOf("at eval") > 0);
-                err.stack = stackLines.splice(0, lineWithSelf).join("\n");
-                let resultArea = $("<div class='result'>Throws the following error:<br>\
-                <div class='result code result-bg c-red'>"+$('<div/>').text(err.message).html().replace("\n","<br>")+"\n"+$('<div/>').text(err.stack).html()+"</div></div>");
-                resultArea.insertAfter(editorDiv);
-                resultAreas.push(resultArea);
-            }
+            Promise.all(Object.values(currentVars).map(v => v())).then(resolvedValues => {
+                try { 
+                    let result = new Function("rdf2h", ...Object.keys(currentVars), cmEditor.getValue())
+                        (rdf2h, ...resolvedValues);
+                    let resultArea = $("<div class='result'>Returns the following result:<br>\
+                     <div class='result result-bg'>"+result+"</div></div>");
+                    resultArea.insertAfter(editorDiv);
+                    resultAreas.push(resultArea);
+                } catch (err) {
+                    let stackLines = err.stack.split("\n");
+                    let lineWithSelf = stackLines.findIndex(l => l.indexOf("at eval") > 0);
+                    err.stack = stackLines.splice(0, lineWithSelf).join("\n");
+                    let resultArea = $("<div class='result'>Throws the following error:<br>\
+                    <div class='result code result-bg c-red'>"+$('<div/>').text(err.message).html().replace("\n","<br>")+"\n"+$('<div/>').text(err.stack).html()+"</div></div>");
+                    resultArea.insertAfter(editorDiv);
+                    resultAreas.push(resultArea);
+                }
+            });
+            
             
         }
         execute();
@@ -93,8 +96,7 @@ $(".editor").toArray().forEach((editorData) => {
     additionalClasses.forEach(name => vars[name] = () => 
     {
         var graph = rdf.graph();
-        rdf.parse(cmEditor.getValue(), graph, "http://example.org/"+name+"/", type);
-        return graph;
+        return rdf.parse(cmEditor.getValue(), graph, "http://example.org/"+name+"/", type);
     });
 });
 $(" .CodeMirror").css("height", "auto");
@@ -106,16 +108,22 @@ new Clipboard(".copyAsTest", {
         let templates = codeMirros[0].getValueAsJS();
         let data = codeMirros[1].getValueAsJS();
         let code = codeMirros[2].getValue();
-        let testTemplate = `it(\'Test generated from manual.\', function () {
+        let testTemplate = `it(\'Test generated from manual.\', function (done) {
             var dataTurtle = ${data};
-            var templatesTurtle = ${templates};
-            var templates = rdf.graph();
-            rdf.parse(templatesTurtle, templates, "http://example.org/templates/", "text/turtle");
-            var data = rdf.graph();
-            rdf.parse(dataTurtle, data, "http://example.org/data", "text/turtle");
-            var renderingResult = (() => { ${code} })();
-            console.log("result: " + renderingResult);
-            assert.equal("EXPECTED RESULT", renderingResult);
+            var renderersTurtle = ${templates};
+            let renderers = rdf.graph();
+            rdf.parse(renderersTurtle, renderers, "http://example.org/templates/", "text/turtle",
+                () => {
+                    let data = rdf.graph();
+                    rdf.parse(dataTurtle, data, "http://example.org/data", "text/turtle", 
+                        () => {
+                            var renderingResult = (() => { ${code} })();
+                            console.log("result: " + renderingResult);
+                            assert.equal("EXPECTED RESULT", renderingResult);
+                            done();
+                        });
+                });
+            
         });`
         section.find(".CodeMirror").toArray().forEach((cm) => console.log(cm));
         alert(testTemplate);
