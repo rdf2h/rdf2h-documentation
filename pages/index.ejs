@@ -8,78 +8,21 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <meta name="viewport" content="width=1000, initial-scale=1.0">
+        <meta name="viewport" content="width=1, initial-scale=1.0">
 
         <link rel="stylesheet" href="https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+        <link rel="stylesheet" href="http://rdf2h.github.io/style.css">
         <link rel="shortcut icon" href="./rdf_flyer.24.png">
-        <style>
-            ::selection {
-                background-color: #d7d4f0;
-            }
-            body {
-                background-color: #f7f7f7;
-                border-right: 1px solid #ddd;
-                font-size: 1rem;
-                font-weight: 400;
-                line-height: 1.5;
-            }
-            section {
-                border-top: 1px solid #ddd;
-                padding: 30px 15px;
-                width: 100%;
-                margin-right: auto;
-                margin-left: auto;
-            }
-            section > code, section > pre, .code {
-                color: #555;
-                padding: 4px;
-                border: 1px solid #ddd;
-                background-color: #fff;
-            }
-            code, .code, .CodeMirror {
-                font-family: 'Fira Code', monospace !important;
-                font-size: .75rem;
-            }
-            .CodeMirror {min-height: 37px;}
-            .rand {
-                border: 1px solid #ddd;
-                background-color: #fff;
-                padding: 0;
-                margin: 8px 0;
-            }
-            .btn-svg {
-                float: right;
-                border: none;
-                background-color: #ffffff00;
-                cursor: pointer;
-                padding: 0;
-                margin: 0;
-            }
-            .btn-svg svg {margin: .4em;}
-            .btn-svg:hover path {fill: #ddd !important;}
-            .btn-svg path {fill: #555 !important;}
-            .result-bg {
-                padding: 4px;
-                margin: 8px 0 8px 29px;
-                background-color: #fff;
-                border: 1px solid #ddd;
-            }
-            .c-red {color:#a11;}
-            .c-dark {color:#555;}
-            .c-blue {color:#219;}
-            .c-violet {color:#708;}
-            .c-green {color:#085;}
-        </style
     </head>
     <body>
-        <div class="container-fluid">
+        <section class="container-fluid">
             <h1 class="display-1">RDF2h manual</h1>
             <p class="lead">
                 This is a step by step demonstration and occasional explanation of the RDF2h features. You can edit all examples in the browser
                 and executed scripts again to see the effects of changes in the code.
             </p>
-        </div>
+        </section>
         <section class="step container-fluid">
             <h1>Defining a renderer</h1>
             The following is a renderer graph that defines a renderer for
@@ -361,6 +304,15 @@
             <code><code class="c-green">foaf</code>:<code class="c-red">knows</code></code>
             property.
         </section>
-
+        <div class="rand py-1 w-100">
+            <div class="container-fluid d-flex justify-content-between">
+                <p class="mb-0">
+                    <a href="https://github.com/rdf2h">Have a look at the Github Repository</a>
+                </p>
+                <p class="mb-0">
+                    <a href="https://factsmission.com/">RDF2h is developed by FactsMission</a>
+                </p>
+            </div>
+        </div>
     </body>
 </html>

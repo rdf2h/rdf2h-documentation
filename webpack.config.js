@@ -38,7 +38,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      title: 'RDF2h DocumentationS',
+      title: 'RDF2h manual',
       template: 'pages/index.ejs', // Load a custom template (ejs by default see the FAQ for details) 
     }),
     new UglifyJSPlugin({

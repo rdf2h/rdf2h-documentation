@@ -5178,14 +5178,15 @@ rdf-sink@^1.0.0:
     rdf-ext "^1.1.0"
     readable-stream "^2.3.5"
 
-rdf2h@../rdf2h:
-  version "0.5.1"
+rdf2h@rdf2h/rdf2h#v2.0:
+  version "2.0.0"
+  resolved "https://codeload.github.com/rdf2h/rdf2h/tar.gz/3d63840bbee9899ed9727b3091f1442ce69de124"
   dependencies:
     ext-rdflib "^0.0.2"
     mustache "*"
-    rdfgraphnode-rdfext "^1.2.3"
+    rdfgraphnode-rdfext "^1.2.4"
 
-rdfgraphnode-rdfext@^1.2.3:
+rdfgraphnode-rdfext@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/rdfgraphnode-rdfext/-/rdfgraphnode-rdfext-1.2.4.tgz#0ef88ee6c8d9e245bfd3a832506c4976354a390b"
   dependencies:
