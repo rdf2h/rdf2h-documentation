@@ -10,7 +10,7 @@
     "codemirror": "^5.33.0",
     "ext-rdflib": "^0.0.2",
     "jquery": "^3.2.1",
-    "rdf2h": "rdf2h/rdf2h#v2.0"
+    "rdf2h": "2.2.0"
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base static",
